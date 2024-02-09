@@ -15,15 +15,38 @@ def _(arg):
 
 # Add-on information variables
 addon_info = {
-    "name": "MyAddon",
-    "summary": "A brief description of the add-on",
-    "description": "A detailed description of what the add-on does.",
-    "version": "0.1",
-    "author": "Your Name email@example.com or placeholder>",
-    "url": "",
-    "sourceURL": "",
-    "license": "To be determined",
-    "licenseURL": "",
+    # add-on Name/identifier, internal for NVDA
+    "addon_name": "addonTemplate",
+    # Add-on summary, usually the user visible name of the addon.
+    # Translators: Summary for this add-on
+    # to be shown on installation and add-on information found in Add-ons Manager.
+    "addon_summary": _("Add-on user visible name"),
+    # Add-on description
+    # Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+    "addon_description": _("""Description for the add-on.
+It can span multiple lines."""),
+    # version
+    "addon_version": "x.y",
+    # Author(s)
+    "addon_author": "name <name@domain.com>",
+    # URL for the add-on documentation support
+    "addon_url": None,
+    # URL for the add-on repository where the source code can be found
+    "addon_sourceURL": None,
+    # Documentation file name
+    "addon_docFileName": "readme.html",
+    # Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
+    "addon_minimumNVDAVersion": None,
+    # Last NVDA version supported/tested (e.g. "2018.4.0", ideally more recent than minimum version)
+    "addon_lastTestedNVDAVersion": None,
+    # Add-on update channel (default is None, denoting stable releases,
+    # and for development releases, use "dev".)
+    # Do not change unless you know what you are doing!
+    "addon_updateChannel": None,
+    # Add-on license such as GPL 2
+    "addon_license": None,
+    # URL for the license document the ad-on is licensed under
+    "addon_licenseURL": None,
 }
 
 # Define the python files that are the sources of your add-on.
