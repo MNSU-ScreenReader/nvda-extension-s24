@@ -11,5 +11,5 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		tones.beep(440, 1000)  # Beep a standard middle A for 1 second.
 
 	__gestures={
-		"kb:NVDA+A": "doBeep"
+		"kb:A": "doBeep"
 	}
