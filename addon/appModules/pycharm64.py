@@ -16,6 +16,11 @@ class AppModule(appModuleHandler.AppModule):
         if isinstance(focusObj, NVDAObjects.IAccessible.IAccessible) and focusObj.role == controlTypes.Role.EDITABLETEXT:
             tones.beep(440, 100)  
         gesture.send()
+    def script_doBeep(self, gesture):
+        tones.beep(440, 1000)  # Beep at 440Hz for 1 second.
+    __gestures = {
+		"kb:NVDA+A": "doBeep",
+	}
    
     def script_reportIndentation(self, gesture):
         obj = api.getNavigatorObject()
