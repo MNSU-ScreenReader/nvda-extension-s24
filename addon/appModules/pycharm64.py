@@ -4,41 +4,51 @@ import api
 import controlTypes
 import speech
 from scriptHandler import script
+import subprocess
+
+def run_pylint(file_path):
+    command = ['pylint', file_path, '--output-format=text']
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        return result.stdout  
+    except subprocess.CalledProcessError as e:
+        return e.output
+def parse_pylint_output(output):
+    errors = []
+    for line in output.split('\n'):
+        if ":" in line and " " in line:
+            parts = line.split(":", 3)
+            if len(parts) >= 4:
+                errors.append({
+                    'line': parts[1],
+                    'type': parts[2].strip(),
+                    'message': parts[3].strip(),
+                })
+    return errors
+
+def vocalize_errors(errors):
+    if errors:
+        for error in errors:
+            speech.speakText(error)
+    else:
+        speech.speakText("No errors found.")
 
 class AppModule(appModuleHandler.AppModule):
-
-    def event_gainFocus(self, obj, nextHandler):
-        tones.beep(550, 50)
-        nextHandler()
     
-    def script_boopOnTab(self, gesture):
-        focusObj = api.getFocusObject()
-        if isinstance(focusObj, NVDAObjects.IAccessible.IAccessible) and focusObj.role == controlTypes.Role.EDITABLETEXT:
-            tones.beep(440, 100)  
-        gesture.send()
-    def script_doBeep(self, gesture):
-        tones.beep(440, 1000)  # Beep at 440Hz for 1 second.
-    __gestures = {
-		"kb:NVDA+A": "doBeep",
-	}
-   
-    def script_reportIndentation(self, gesture):
-        obj = api.getNavigatorObject()
-        try:
-            textInfo = obj.makeTextInfo(textInfos.POSITION_CARET)
-            textInfo.expand(textInfos.UNIT_CHARACTER)
-            text = textInfo.text
-        except (RuntimeError, NotImplementedError):
-            gesture.send()
-            return
-        if text == " ":
-            speech.speak("indentation")
+    def script_announceLintErrors(self, gesture):
+        filePath = self.getActiveFilePath()  
+        pylintOutput = run_pylint(filePath)
+        errors = parse_pylint_output(pylintOutput)
+        if errors:
+            for error in errors:
+                speech.speak(f"Line {error['line']}, {error['type']}, {error['message']}")
         else:
-            speech.speak(text)
+            speech.speak("No linting errors.")
 
-    def __init__(self, *args, **kwargs):
-        super(AppModule, self).__init__(*args, **kwargs)
-        self.bindGesture("kb:space", "reportIndentation")
+    __gestures = {
+        "kb:NVDA+l": "announceLintErrors",
+    }
+
+
+
    
-
-  
