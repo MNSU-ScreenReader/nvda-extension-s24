@@ -7,7 +7,7 @@ from scriptHandler import script
 import subprocess
 
 def run_pylint(file_path):
-    command = ['pylint', file_path, 'C:\Users\meron\OneDrive\Documents\GitHub\testing\addon\appModules']
+    command = ['pylint', file_path, 'C:\Users\meron\PycharmProjects\pythonProject9\main.py']
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         return result.stdout  
