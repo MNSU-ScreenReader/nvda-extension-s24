@@ -89,12 +89,19 @@ class PyCharmEditWindow(EditWindowBaseCls, EditableTextWithSuggestions):
     def event_caret(self):
         super(PyCharmEditWindow, self).event_caret()
         tones.beep(330,50)
+
         info = self.makeTextInfo(textInfos.POSITION_ALL)
+        info2 = self.makeTextInfo(textInfos.POSITION_CARET)
+
         code_string = info.text
-        #print(code_string)
+        info2.expand(textInfos.UNIT_LINE)
+        current = info2.text
+        current = len(current) - len(current.lstrip())
+
         parser = IndentationParser(code_string)
         temp, _ = parser.get_indentation()
-        print("Indentation used in the program:", temp)
-        speech.speakText(f'Indentation is {temp}') 
+        current = int(current/temp)
+
+        speech.speakText(f'Indentation is {current}') 
         indentation_percentages, majority_indentation = parser.get_indentation_statistics()
         print(indentation_percentages)
