@@ -108,12 +108,18 @@ class PyCharmEditWindow(EditWindowBaseCls, EditableTextWithSuggestions):
         speech.speakText(f'Indentation is {current}') 
         indentation_percentages, majority_indentation = parser.get_indentation_statistics()
         #print(indentation_percentages)
-        found, Fname = self.findFunction()
-        print(f'Found: {found} Name:{Fname}')
+        self.findFunction()
+        #print(f'Found: {found} Name:{Fname}')
 
     def script_detectFunction(self,gesture):
         self.editor_file
-        self.current_idx
     __gestures = {
         "kb:NVDA+I": "detectFunction",
     }
+    
+    def findFunction(self):
+        tree = ast.parse("".join(self.editor_file))
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                print("hello")
