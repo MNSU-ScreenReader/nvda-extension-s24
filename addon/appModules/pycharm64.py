@@ -1,4 +1,5 @@
 import sys,os
+import ast
 import appModuleHandler
 import eventHandler
 import scriptHandler
@@ -14,20 +15,19 @@ from NVDAObjects.IAccessible import IAccessible
 from editableText import EditableTextWithoutAutoSelectDetection
 from NVDAObjects.behaviors import EditableTextWithAutoSelectDetection as EditWindowBaseCls
 from NVDAObjects.behaviors import EditableTextWithSuggestions
-
 class IndentationParser:
 
     def __init__(self, prgm_text: str):
         self.prgm_text: str = prgm_text
 
     def get_prgm_text(self):
-        print(self.prgm_text, "hoe ass")
         return self.prgm_text
 
-    def get_indentation(self):
+    def get_indentation(self, current_line: str):
         indentation_percentages, majority_indentation = self.get_indentation_statistics()
         indentation = 0
         count = 0
+        current_idx = -1
         lines = self.prgm_text.split('\n')
 
         for idx, line in enumerate(lines, start=1):
@@ -36,19 +36,20 @@ class IndentationParser:
                 if current_indentation > 0:
                     count += 1
                     indentation = current_indentation
-                    
-                    
+                    if(current_line == line):
+                        current_idx = idx
+
                     if current_indentation % majority_indentation != 0:
                         if lines[idx - 2].strip().endswith(','):
                             continue
                         print("error line:", idx, " change to", majority_indentation)
                         return majority_indentation, idx
-        return indentation, idx
+        return indentation, current_idx
     
     def get_indentation_statistics(self):
         indentation_count = {}
         total_lines = 0
-        temp = 9999999
+        temp = sys.maxsize
         lines = self.prgm_text.split('\n')
 
         for line in lines:
@@ -74,18 +75,15 @@ class AppModule(appModuleHandler.AppModule):
 
     def chooseNVDAObjectOverlayClasses(self, obj, clsList):
         if obj.role == controlTypes.ROLE_EDITABLETEXT:
-            print("In the editor")
+            #print("In the editor")
             clsList.insert(0, PyCharmEditWindow)
 
-
-
 class PyCharmEditWindow(EditWindowBaseCls, EditableTextWithSuggestions):
-    code_string = ""
+    editor_file = ""
     def event_gainFocus(self):
         super(PyCharmEditWindow, self).event_gainFocus()
         self.appModule.edit = None
         self.appModule._edit = weakref.ref(self)
-
     def event_caret(self):
         super(PyCharmEditWindow, self).event_caret()
         tones.beep(330,50)
@@ -93,15 +91,29 @@ class PyCharmEditWindow(EditWindowBaseCls, EditableTextWithSuggestions):
         info = self.makeTextInfo(textInfos.POSITION_ALL)
         info2 = self.makeTextInfo(textInfos.POSITION_CARET)
 
-        code_string = info.text
+        #Stores the file that's in the editor
+        self.editor_file = info.text
         info2.expand(textInfos.UNIT_LINE)
-        current = info2.text
-        current = len(current) - len(current.lstrip())
+        
+        #Gets the current line and indentation level of the caret
+        current_line = info2.text.strip('\n')
+        current = len(current_line) - len(current_line.lstrip())
 
-        parser = IndentationParser(code_string)
-        temp, _ = parser.get_indentation()
-        current = int(current/temp)
-
+        #Parses for the indentation level of the current line, dividing by majority to get the level
+        parser = IndentationParser(self.editor_file)
+        indentation, current_idx = parser.get_indentation(current_line)
+        current = int(current/indentation)
+        self.current_idx = current_idx
+        #Reads aloud indentation level of current line
         speech.speakText(f'Indentation is {current}') 
         indentation_percentages, majority_indentation = parser.get_indentation_statistics()
-        print(indentation_percentages)
+        #print(indentation_percentages)
+        found, Fname = self.findFunction()
+        print(f'Found: {found} Name:{Fname}')
+
+    def script_detectFunction(self,gesture):
+        self.editor_file
+        self.current_idx
+    __gestures = {
+        "kb:NVDA+I": "detectFunction",
+    }
