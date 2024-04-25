@@ -1,1 +1,37 @@
-NVDA Screen Reader Team
+# PyCharm Add-on for NVDA 
+
+This add-on for PyCharm is designed to improve accessibility for users who are visually impaired and rely on the use of screen readers for everyday use and want to learn or improve their coding abilities. 
+
+## Background 
+
+The scope of this add-on is based off the previous work published by Dr. Guario Salivia and Dr. Flint Million involving Braille-based interaction with a specific assembly language IDE. The goal of this iteration of the project was to get indentation working with NVDA in the sense the user is read aloud the indentation level. 
+
+## Features 
+
+### NVDA Indentation Parser 
+
+The NVDA screen reader addon incorporates a specialized parser that scans Python files to determine the overall indentation structure of the file. This parser identifies any inconsistencies in the indentation patterns within the file, providing insight into where to adjust the code. 
+
+### Audible Indentation Feedback 
+
+The addon is designed to audibly speak aloud the indentation level of the current line being navigated with the caret movement in a Python file. This feature aids developers using the screen reader in understanding the hierarchical structure of their code. 
+
+### Function Detection and Output 
+
+A feature of the addon is its ability to detect and output the function to which the current line belongs within a Python file. We did this by binding a gesture where if you press `NVDA + I` it will read aloud the function. This functionality assists developers in identifying the context and scope of their code, enabling more efficient and accurate code navigation. 
+
+## Processes and Workflows 
+
+ 
+
+## Resources 
+
+ 
+
+## Next Steps 
+
+ 
+
+ 
+
+ 
