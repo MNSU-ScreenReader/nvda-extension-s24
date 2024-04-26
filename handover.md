@@ -55,7 +55,10 @@ A feature of the addon is its ability to detect and output the function to which
        - Employing syntax parsing (e.g., using parsers like ast module in Python) to analyze the structure of Python code and extract indentation information.
 
      - Pattern Recognition
-       -  Implementing algorithms to recognize and characterize indentation patterns within Python files, distinguishing between different levels of indentation and detecting inconsistencies. 
+       -  Implementing algorithms to recognize and characterize indentation patterns within Python files, distinguishing between different levels of indentation and detecting inconsistencies, taking more of a string manipulation approach.
+      
+  2. Add-on parser integration
+  3. Function Detection  
 
 	 
 
